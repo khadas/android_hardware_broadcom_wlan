@@ -320,6 +320,10 @@ protected:
 wifi_error wifi_get_valid_channels(wifi_interface_handle handle,
         int band, int max_channels, wifi_channel *channels, int *num_channels)
 {
+	if (check_wifi_chip_type() == REALTEK_WIFI) {
+		*num_channels = 12;
+		return WIFI_SUCCESS;
+	}
     GetChannelListCommand command(handle, channels, num_channels,
                                         max_channels, band);
     return (wifi_error) command.requestResponse();
