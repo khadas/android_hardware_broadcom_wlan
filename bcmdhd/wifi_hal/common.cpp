@@ -272,6 +272,8 @@ int check_wifi_chip_type()
 	}
 	if (0 == strncmp(wifi_type, "RTL", 3)) {
 		type = REALTEK_WIFI;
+	} else if (0 == strncmp(wifi_type, "SSV", 3)) {
+		type = SSV_WIFI;
 	} else {
 		type = BROADCOM_WIFI;
 	}

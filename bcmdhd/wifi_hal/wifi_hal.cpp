@@ -220,7 +220,7 @@ wifi_error wifi_initialize(wifi_handle *handle)
 {
     srand(getpid());
 
-	if (check_wifi_chip_type() == REALTEK_WIFI) {
+	if (check_wifi_chip_type() != BROADCOM_WIFI) {
 		ALOGI("Initializing REALTEK_WIFI");
 	} else {
 		ALOGI("Initializing BROADCOM_WIFI");
@@ -1275,9 +1275,10 @@ wifi_error wifi_get_concurrency_matrix(wifi_interface_handle handle, int set_siz
 
 wifi_error wifi_set_scanning_mac_oui(wifi_interface_handle handle, oui scan_oui)
 {
-	if (check_wifi_chip_type() == REALTEK_WIFI) {
-		return WIFI_SUCCESS;
-	}
+    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+        return WIFI_SUCCESS;
+    }
+
     SetPnoMacAddrOuiCommand command(handle, scan_oui);
     return (wifi_error)command.start();
 
@@ -1291,9 +1292,10 @@ wifi_error wifi_set_nodfs_flag(wifi_interface_handle handle, u32 nodfs)
 
 wifi_error wifi_set_country_code(wifi_interface_handle handle, const char *country_code)
 {
-	if (check_wifi_chip_type() == REALTEK_WIFI) {
-		return WIFI_SUCCESS;
-	}
+    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+        return WIFI_SUCCESS;
+    }
+
     SetCountryCodeCommand command(handle, country_code);
     return (wifi_error) command.requestResponse();
 }
@@ -1341,9 +1343,10 @@ static wifi_error wifi_stop_rssi_monitoring(wifi_request_id id, wifi_interface_h
 static wifi_error wifi_get_packet_filter_capabilities(wifi_interface_handle handle,
         u32 *version, u32 *max_len)
 {
-	if (check_wifi_chip_type() == REALTEK_WIFI) {
-		return WIFI_SUCCESS;
-	}
+    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+        return WIFI_SUCCESS;
+    }
+
     ALOGD("Getting APF capabilities, halHandle = %p\n", handle);
     AndroidPktFilterCommand *cmd = new AndroidPktFilterCommand(handle, version, max_len);
     NULL_CHECK_RETURN(cmd, "memory allocation failure", WIFI_ERROR_OUT_OF_MEMORY);
@@ -1368,9 +1371,10 @@ static wifi_error wifi_set_packet_filter(wifi_interface_handle handle,
 
 static wifi_error wifi_configure_nd_offload(wifi_interface_handle handle, u8 enable)
 {
-	if (check_wifi_chip_type() == REALTEK_WIFI) {
-		return WIFI_SUCCESS;
-	}
+    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+        return WIFI_SUCCESS;
+    }
+
     SetNdoffloadCommand command(handle, enable);
     return (wifi_error) command.requestResponse();
 }

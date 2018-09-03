@@ -240,6 +240,7 @@ typedef struct wifi_gscan_full_result {
 enum {
 	REALTEK_WIFI = 1,
 	BROADCOM_WIFI,
+	SSV_WIFI,
 };
 
 wifi_error wifi_register_handler(wifi_handle handle, int cmd, nl_recvmsg_msg_cb_t func, void *arg);
