@@ -261,3 +261,24 @@ wifi_error wifi_cancel_cmd(wifi_request_id id, wifi_interface_handle iface)
     return WIFI_ERROR_INVALID_ARGS;
 }
 
+static char wifi_type[64] = {0};
+extern "C" int check_wifi_chip_type_string(char *type);
+int check_wifi_chip_type()
+{
+	int type;
+	if (wifi_type[0] == 0) {
+		check_wifi_chip_type_string(wifi_type);
+		ALOGE("WIFI_TYPE = %s\n",wifi_type);
+	}
+	if (0 == strncmp(wifi_type, "RTL", 3)) {
+		type = REALTEK_WIFI;
+	} else if (0 == strncmp(wifi_type, "SSV", 3)) {
+		type = SSV_WIFI;
+	} else if (0 == strncmp(wifi_type, "RK912", 3)) {
+		type = RK912_WIFI;
+	} else {
+		type = BROADCOM_WIFI;
+	}
+	return type;
+}
+
