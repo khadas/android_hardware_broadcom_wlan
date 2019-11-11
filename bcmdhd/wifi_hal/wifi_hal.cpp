@@ -85,6 +85,9 @@ static wifi_error wifi_get_packet_filter_capabilities(wifi_interface_handle hand
                 u32 *version, u32 *max_len);
 static wifi_error wifi_configure_nd_offload(wifi_interface_handle iface, u8 enable);
 
+wifi_error wifi_get_wake_reason_stats(wifi_interface_handle iface,
+                             WLAN_DRIVER_WAKE_REASON_CNT *wifi_wake_reason_cnt);
+
 typedef enum wifi_attr {
     ANDR_WIFI_ATTRIBUTE_NUM_FEATURE_SET,
     ANDR_WIFI_ATTRIBUTE_FEATURE_SET,
@@ -212,6 +215,7 @@ wifi_error init_wifi_vendor_hal_func_table(wifi_hal_fn *fn)
     fn->wifi_get_rx_pkt_fates = wifi_get_rx_pkt_fates;
     fn->wifi_get_packet_filter_capabilities = wifi_get_packet_filter_capabilities;
     fn->wifi_set_packet_filter = wifi_set_packet_filter;
+    fn->wifi_get_wake_reason_stats = wifi_get_wake_reason_stats;
     return WIFI_SUCCESS;
 }
 

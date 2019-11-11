@@ -230,7 +230,7 @@ protected:
             ALOGE("on_time_gscan: = %u ms", radio_stat->on_time_gscan);
             ALOGE("on_time_pno_scan: = %u ms", radio_stat->on_time_pno_scan);
             ALOGE("on_time_hs20: = %u ms", radio_stat->on_time_hs20);
-            free(radio_stat);
+            //free(radio_stat);
             return NL_SKIP;
         }
 	wifi_iface_stat *iface_stat = NULL;
@@ -342,16 +342,23 @@ wifi_error wifi_get_link_stats(wifi_request_id id,
 }
 
 wifi_error wifi_set_link_stats(
-        wifi_interface_handle /* iface */, wifi_link_layer_params /* params */)
+        wifi_interface_handle iface, wifi_link_layer_params params)
 {
+	if (check_wifi_chip_type() != BROADCOM_WIFI) {
+		RTKSetLinkStatsCommand command(iface);
+		return (wifi_error) command.requestResponse();
+	}
     /* Return success here since bcom HAL does not need set link stats. */
     return WIFI_SUCCESS;
 }
 
-wifi_error wifi_clear_link_stats(
-        wifi_interface_handle /* iface */, u32 /* stats_clear_req_mask */,
-        u32 * /* stats_clear_rsp_mask */, u8 /* stop_req */, u8 * /* stop_rsp */)
+wifi_error wifi_clear_link_stats(wifi_interface_handle iface,
+      u32 stats_clear_req_mask, u32 *stats_clear_rsp_mask, u8 stop_req, u8 *stop_rsp)
 {
+	if (check_wifi_chip_type() != BROADCOM_WIFI) {
+		RTKClearLinkStatsCommand command(iface);
+		return (wifi_error) command.requestResponse();
+	}
     /* Return success here since bcom HAL does not support clear link stats. */
     return WIFI_SUCCESS;
 }
