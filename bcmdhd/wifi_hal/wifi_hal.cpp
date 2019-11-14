@@ -35,6 +35,7 @@
 #include <netlink/attr.h>
 #include <netlink/handlers.h>
 #include <netlink/msg.h>
+#include <cutils/properties.h>
 
 #include <dirent.h>
 #include <net/if.h>
@@ -1310,7 +1311,15 @@ wifi_error wifi_set_country_code(wifi_interface_handle handle, const char *count
 static wifi_error wifi_start_rssi_monitoring(wifi_request_id id, wifi_interface_handle
                         iface, s8 max_rssi, s8 min_rssi, wifi_rssi_event_handler eh)
 {
+    static char state[PROPERTY_VALUE_MAX];
+
     ALOGD("Start RSSI monitor %d", id);
+    property_get("vendor.wifi.state", state, "disconnected");
+    if (0 == strcmp (state, "disconnected")) {
+	ALOGD("Start RSSI monitor WIFI_ERROR_INVALID_ARGS");
+	return WIFI_ERROR_INVALID_ARGS;
+    }
+
     wifi_handle handle = getWifiHandle(iface);
     SetRSSIMonitorCommand *cmd = new SetRSSIMonitorCommand(id, iface, max_rssi, min_rssi, eh);
     NULL_CHECK_RETURN(cmd, "memory allocation failure", WIFI_ERROR_OUT_OF_MEMORY);
@@ -1330,8 +1339,13 @@ static wifi_error wifi_start_rssi_monitoring(wifi_request_id id, wifi_interface_
 
 static wifi_error wifi_stop_rssi_monitoring(wifi_request_id id, wifi_interface_handle iface)
 {
+    static char state[PROPERTY_VALUE_MAX];
     ALOGD("Stopping RSSI monitor");
-
+    property_get("vendor.wifi.state", state, "disconnected");
+    if (0 == strcmp (state, "disconnected")) {
+	ALOGD("Stopping RSSI monitor WIFI_ERROR_INVALID_ARGS");
+	return WIFI_ERROR_INVALID_ARGS;
+    }
     if(id == -1) {
         wifi_rssi_event_handler handler;
         s8 max_rssi = 0, min_rssi = 0;
