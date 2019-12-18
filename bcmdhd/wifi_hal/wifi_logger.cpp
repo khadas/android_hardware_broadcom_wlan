@@ -426,8 +426,8 @@ public:
 wifi_error wifi_get_firmware_version(wifi_interface_handle iface, char *buffer,
         int buffer_size)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
-        std::string pFirmwareVer = "RTK_FIRMWARE";
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
+        std::string pFirmwareVer = "WIFI_FIRMWARE";
         memcpy(buffer, pFirmwareVer.c_str(), pFirmwareVer.length()+1);
         return WIFI_SUCCESS;
     }
@@ -446,8 +446,8 @@ wifi_error wifi_get_firmware_version(wifi_interface_handle iface, char *buffer,
 /* API to collect a driver version string */
 wifi_error wifi_get_driver_version(wifi_interface_handle iface, char *buffer, int buffer_size)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
-        std::string pDriverVer = "RTK_DRIVER";
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
+        std::string pDriverVer = "WIFI_DRIVER";
         memcpy(buffer, pDriverVer.c_str(), pDriverVer.length()+1);
         return WIFI_SUCCESS;
     }
@@ -466,7 +466,7 @@ wifi_error wifi_get_driver_version(wifi_interface_handle iface, char *buffer, in
 /* API to collect driver records */
 wifi_error wifi_get_ring_data(wifi_interface_handle iface, char *ring_name)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
     DebugCommand *cmd = new DebugCommand(iface, ring_name, GET_RING_DATA);
@@ -480,9 +480,9 @@ wifi_error wifi_get_ring_data(wifi_interface_handle iface, char *ring_name)
 wifi_error wifi_get_ring_buffers_status(wifi_interface_handle iface,
         u32 *num_rings, wifi_ring_buffer_status *status)
 {
-	if (check_wifi_chip_type() != BROADCOM_WIFI) {
+	if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
 		wifi_ring_buffer_status* pLocalstatus = NULL;
-		std::string from = "RTK_RING";
+		std::string from = "WIFI_RING";
 		memcpy(status->name, from.c_str(), strlen(from.c_str())+1);
 		*num_rings = 1;
 
@@ -505,7 +505,7 @@ wifi_error wifi_get_logger_supported_feature_set(wifi_interface_handle iface,
         unsigned int *support)
 {
     if (support) {
-	if (check_wifi_chip_type() != BROADCOM_WIFI) {
+	if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
 		if (check_wifi_chip_type() == RK912_WIFI) {
 			*support = 0;
 			return WIFI_SUCCESS;
@@ -529,7 +529,7 @@ wifi_error wifi_get_logger_supported_feature_set(wifi_interface_handle iface,
 wifi_error wifi_start_logging(wifi_interface_handle iface, u32 verbose_level,
         u32 flags, u32 max_interval_sec, u32 min_data_size, char *ring_name)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
     if (ring_name) {
@@ -964,7 +964,7 @@ public:
 wifi_error wifi_get_firmware_memory_dump( wifi_interface_handle iface,
         wifi_firmware_memory_dump_handler handler)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         if (check_wifi_chip_type() == RK912_WIFI)
             return WIFI_ERROR_NOT_SUPPORTED;
         return WIFI_SUCCESS;
@@ -1259,7 +1259,7 @@ protected:
 
 wifi_error wifi_start_pkt_fate_monitoring(wifi_interface_handle handle)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
     PacketFateCommand *cmd = new PacketFateCommand(handle);
@@ -1273,7 +1273,7 @@ wifi_error wifi_get_tx_pkt_fates(wifi_interface_handle handle,
         wifi_tx_report *tx_report_bufs, size_t n_requested_fates,
         size_t *n_provided_fates)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
     PacketFateCommand *cmd = new PacketFateCommand(handle, tx_report_bufs,
@@ -1288,7 +1288,7 @@ wifi_error wifi_get_rx_pkt_fates(wifi_interface_handle handle,
         wifi_rx_report *rx_report_bufs, size_t n_requested_fates,
         size_t *n_provided_fates)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
     PacketFateCommand *cmd = new PacketFateCommand(handle, rx_report_bufs,

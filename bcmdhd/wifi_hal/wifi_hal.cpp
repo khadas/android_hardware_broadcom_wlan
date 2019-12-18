@@ -49,6 +49,7 @@
 
 #include <log/log.h>
 
+#include "version.h"
 #include "wifi_hal.h"
 #include "common.h"
 #include "cpp_bindings.h"
@@ -224,8 +225,8 @@ wifi_error wifi_initialize(wifi_handle *handle)
 {
     srand(getpid());
 
-	if (check_wifi_chip_type() != BROADCOM_WIFI) {
-		ALOGI("Initializing REALTEK_WIFI");
+	if (check_wifi_chip_type() == REALTEK_WIFI) {
+		ALOGI("Initializing REALTEK_WIFI, version : %s", RTW_WIFI_HAL_VERSION);
 	} else {
 		ALOGI("Initializing BROADCOM_WIFI");
 	}
@@ -1283,13 +1284,12 @@ wifi_error wifi_get_concurrency_matrix(wifi_interface_handle handle, int set_siz
 
 wifi_error wifi_set_scanning_mac_oui(wifi_interface_handle handle, oui scan_oui)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
 
     SetPnoMacAddrOuiCommand command(handle, scan_oui);
     return (wifi_error)command.start();
-
 }
 
 wifi_error wifi_set_nodfs_flag(wifi_interface_handle handle, u32 nodfs)
@@ -1300,7 +1300,7 @@ wifi_error wifi_set_nodfs_flag(wifi_interface_handle handle, u32 nodfs)
 
 wifi_error wifi_set_country_code(wifi_interface_handle handle, const char *country_code)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
 
@@ -1334,7 +1334,7 @@ static wifi_error wifi_start_rssi_monitoring(wifi_request_id id, wifi_interface_
         cmd->releaseRef();
         return result;
     }
-    return result;
+    return WIFI_ERROR_UNKNOWN;
 }
 
 static wifi_error wifi_stop_rssi_monitoring(wifi_request_id id, wifi_interface_handle iface)
@@ -1358,7 +1358,8 @@ static wifi_error wifi_stop_rssi_monitoring(wifi_request_id id, wifi_interface_h
         cmd->releaseRef();
         return WIFI_SUCCESS;
     }
-    return wifi_cancel_cmd(id, iface);
+	wifi_cancel_cmd(id, iface);
+    return WIFI_ERROR_UNKNOWN;
 }
 
 static wifi_error wifi_get_packet_filter_capabilities(wifi_interface_handle handle,
@@ -1392,7 +1393,7 @@ static wifi_error wifi_set_packet_filter(wifi_interface_handle handle,
 
 static wifi_error wifi_configure_nd_offload(wifi_interface_handle handle, u8 enable)
 {
-    if (check_wifi_chip_type() != BROADCOM_WIFI) {
+    if (check_wifi_chip_type() != BROADCOM_WIFI && check_wifi_chip_type() != REALTEK_WIFI) {
         return WIFI_SUCCESS;
     }
 
