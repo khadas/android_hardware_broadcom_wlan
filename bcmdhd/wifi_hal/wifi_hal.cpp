@@ -2121,6 +2121,9 @@ wifi_error wifi_set_coex_unsafe_channels(wifi_handle handle,
         ALOGE("Setting Channel Avoidance failed\n");
     }
     cmd->releaseRef();
+
+    if (result != WIFI_SUCCESS)
+        return WIFI_ERROR_NOT_SUPPORTED;
     return result;
 }
 
@@ -2842,5 +2845,10 @@ wifi_error wifi_get_usable_channels(wifi_handle handle, u32 band_mask, u32 iface
     wlan0Handle = wifi_get_wlan_interface((wifi_handle)handle, ifaceHandles, numIfaceHandles);
     UsableChannelCommand command(wlan0Handle, band_mask, iface_mode_mask,
                                     filter_mask, max_size, size, channels);
-    return (wifi_error)command.start();
+
+    wifi_error result = (wifi_error)command.start();
+
+    if (result != WIFI_SUCCESS)
+        return WIFI_ERROR_NOT_SUPPORTED;
+    return result;
 }
